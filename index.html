@@ -244,13 +244,23 @@
         }
 
         function submitOrder() {
-            const cardInput = document.getElementById('card_last_four').value.trim();
+            let cardInput = document.getElementById('card_last_four').value.trim();
+            
+            // تبدیل اتوماتیک اعداد فارسی به انگلیسی برای جلوگیری از بروز خطا در پردازش عددی
+            const p2e = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+            cardInput = p2e(cardInput);
+
             const selector = document.getElementById('planSelector');
             const planId = selector.value;
             const planName = selector.options[selector.selectedIndex].getAttribute('data-name');
 
             if (cardInput.length !== 4 || isNaN(cardInput)) {
-                tg.showAlert("⚠️ لطفاً ۴ رقم آخر کارت خود را به صورت دقیق و عددی وارد کنید.");
+                // اصلاح متد آلرت پیش فرض تلگرام از showAlert به ساختار استاندارد شو پاپ آپ
+                tg.showPopup({
+                    title: 'خطا',
+                    message: '⚠️ لطفاً ۴ رقم آخر کارت خود را به صورت دقیق و عددی وارد کنید.',
+                    buttons: [{type: 'ok'}]
+                });
                 return;
             }
 
